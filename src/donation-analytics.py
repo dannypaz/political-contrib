@@ -13,7 +13,7 @@ import os
 from pathlib import Path
 
 # This is the actual API of the project
-from donation_analytics.repeat_donors import repeat_donors
+from donation_analytics.api import find_repeat_donors
 
 class DonationFile:
     """
@@ -57,7 +57,7 @@ class DonationFile:
 
         with open(percentile_path) as percentile:
             reader = csv.reader(percentile)
-            return next(reader)[1:]
+            return next(reader)[0]
 
     def process_input_file(self):
         """
@@ -75,7 +75,7 @@ class DonationFile:
         with open(self.file_path) as datafile:
             datareader = csv.reader(datafile)
             for row in datareader:
-                repeat_donors(self.percentile, row, self.output_path)
+                find_repeat_donors(self.percentile, row, self.output_path)
 
 
 parser = argparse.ArgumentParser(description='Process some integers.')

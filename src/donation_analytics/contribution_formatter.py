@@ -91,14 +91,14 @@ class ContributionFormatter:
         return True
 
     def dump_row(self):
-        return [
-            self.cmte_id,
-            self.name,
-            self.zip_code,
-            self.transaction_dt,
-            self.transaction_amt,
-            self.other_id,
-        ]
+        return {
+            'cmte_id': self.cmte_id,
+            'name': self.name,
+            'zip_code': self.zip_code,
+            'dt': self.transaction_dt,
+            'amt': float(self.transaction_amt),
+            'other_id': self.other_id,
+        }
 
 
 

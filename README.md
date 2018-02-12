@@ -1,5 +1,10 @@
 # Danny Paz's Political Contributions Roadmap Program of Doom
 
+# Description
+
+I tried to stay away from using any libraries outside of standard lib, so you will see code
+that is not as concise as it would be to use numpy, or scikit.
+
 # Before you begin
 
 # Running the program
