@@ -1,5 +1,6 @@
 from datetime import datetime
 
+# author: dannypaz
 class ContributionFormatter:
     """
         A class to handle all operations for interpreting lines from the contributions data
@@ -36,16 +37,9 @@ class ContributionFormatter:
         return self.POSITIONS[column_name] - self.POSITION_OFFSET
 
     def parse_row(self):
-        """
-            Some things to consider:
-            1. we only need the first 5 numbers of zipcode
-            2. Unique records are name and zipcode (we could hash this)
-            3. you can just skip the shit if:
-        """
-
         self.cmte_id = self.row[self.get_column_position('cmte_id')]
         self.name = self.row[self.get_column_position('name')]
-        self.zip_code = self.row[self.get_column_position('zip_code')]
+        self.zip_code = self.row[self.get_column_position('zip_code')][:5]
         self.transaction_dt = self.row[self.get_column_position('transaction_dt')]
         self.transaction_amt = self.row[self.get_column_position('transaction_amt')]
         self.other_id = self.row[self.get_column_position('other_id')]
@@ -56,36 +50,39 @@ class ContributionFormatter:
             Data Engineering requirements.
 
             A record is 'invalid' if one of the following is true:
-            - other_id is empty
+            - other_id is not empty
             - transaction_dt is malformed
             - zipcode is invalid (fewer than 4 digits, missing)
             - name is invalid (empty, malformed?)
             - if CMTE_ID or TRANSACTION_AMT is empty
         """
-        if self.required_columns_present:
-            return True
-        else:
-            return False
+
+        validations = [
+            self.required_columns_present(),
+            self.other_id_empty(),
+            self.valid_transaction_date(),
+            self.valid_zipcode(),
+            self.valid_name()
+        ]
+
+        return False if False in validations else True
 
     def required_columns_present(self):
-        if not (self.other_id and self.zip_code and self.name and self.cmte_id and self.transaction_amt):
-            return False
-        else:
-            return True
+        return (self.zip_code and self.name and self.cmte_id and self.transaction_amt)
+
+    def other_id_empty(self):
+        True if not self.other_id else False
 
     def valid_transaction_date(self):
-        datetime_object = datetime.strptime('Jun 1 2005  1:33PM', '%b %d %Y %I:%M%p')
-
-        if datetime_object:
-            return True
-        else:
+        try:
+            datetime.strptime(self.transaction_dt, '%m%d%Y')
+        except ValueError:
             return False
+
+        return True
 
     def valid_zipcode(self):
-        if len(self.zip_code) < 5:
-            return False
-        else:
-            return True
+        return len(self.zip_code) >= 5
 
     def valid_name(self):
         return True
@@ -99,6 +96,3 @@ class ContributionFormatter:
             'amt': float(self.transaction_amt),
             'other_id': self.other_id,
         }
-
-
-

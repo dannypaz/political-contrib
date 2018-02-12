@@ -7,6 +7,13 @@ class RepeatDonors:
     REPEAT_DONORS = {}
 
     def add_row(self, formatter):
+        """
+            Adds a row to the contributions hash (which emulates a datastore)
+        """
+        if not formatter.valid_row():
+            print("Bad row detected and skipped")
+            return
+
         row = formatter.dump_row()
 
         unique_id = "".join([row['name'], row['zip_code']]).replace(" ", "")
@@ -21,35 +28,36 @@ class RepeatDonors:
 
         self._add_contribution(rec_id, unique_id, row)
 
-        return None
-
     def export_with_percentile(self, output_path, percentile):
-        # Calculate things
-        for dude in self.REPEAT_DONORS:
-            recips = self.REPEAT_DONORS[dude]
-            for recip in recips:
-                info = self.CONTRIBUTIONS[recip]
+        """
+            Appends rows to a given output path for all repeat donors, updated
+            via streaming
 
-                total = 0.0
-                seen_totals = []
+            returns None if successful
+        """
 
-                for idx, v in enumerate(info[dude]['totals']):
-                    seen_totals.append(v['amt'])
-                    total += v['amt']
-                    year = datetime.strptime(v['dt'], '%m%d%Y').year
+        for donor in self.REPEAT_DONORS:
+            for recip in self.REPEAT_DONORS[donor]:
+                self._create_row(recip, donor, percentile, output_path)
 
-                    row = [
-                        recip,
-                        v['zip_code'],
-                        year,
-                        self._percentile(seen_totals, percentile),
-                        total,
-                        idx + 1,
-                    ]
-                    self._export_row(output_path, row)
+    def _create_row(self, recip, donor, percentile, output_path):
+        raw_totals = self.CONTRIBUTIONS[recip][donor]['totals']
+        total = 0.0
+        seen_totals = []
 
-        #row_headers = [rec_id, zip_code, year, amt, total, occurrance]
-        return None
+        for idx, v in enumerate(raw_totals):
+            seen_totals.append(v['amt'])
+            total += v['amt']
+            year = datetime.strptime(v['dt'], '%m%d%Y').year
+
+            self._export_row(output_path, [
+                recip,
+                v['zip_code'],
+                year,
+                self._percentile(seen_totals, percentile),
+                total,
+                idx + 1,
+            ])
 
     def _add_contribution(self, rec_id, unique_id, row):
         contrib = self.CONTRIBUTIONS[rec_id][unique_id]
@@ -75,17 +83,20 @@ class RepeatDonors:
         if not rec_id in self.CONTRIBUTIONS:
             self.CONTRIBUTIONS[rec_id] = {}
 
-    def _percentile(self, data, percentile):
+    def _percentile(self, totals, percentile):
         """
             This example was taken from information in https://stackoverflow.com/questions/2374640/how-do-i-calculate-percentiles-with-python-numpy
             AND from the function definition found on wikipedia.
 
             This will only work if data is sorted.
         """
-        size = len(data)
-        return sorted(data)[int(math.ceil((size * float(percentile)) / 100)) - 1]
+        entries = len(totals)
+        return sorted(totals)[int(math.ceil((entries * float(percentile)) / 100)) - 1]
 
     def _export_row(self, output_path, row):
+        """
+            Appends a row to a given output path
+        """
         with open(output_path, 'a') as res:
             reswriter = csv.writer(res, delimiter='|')
             reswriter.writerow(row)

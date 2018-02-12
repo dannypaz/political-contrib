@@ -4,5 +4,5 @@
 rm -rf ./output
 mkdir output
 
-python ./src/donation-analytics.py --input ./input/itcont.txt --percentile ./input/percentile.txt --output ./output/repeat_donors.txt
+python ./src/donation_analytics.py --input ./input/itcont.txt --percentile ./input/percentile.txt --output ./output/repeat_donors.txt
 
