@@ -3,10 +3,6 @@ import math
 from datetime import datetime
 
 class RepeatDonors:
-    """
-        Storing in Contributions:
-        { 'REC_ID': { 'unique id': {total: totals:} } }
-    """
     CONTRIBUTIONS =  {}
     REPEAT_DONORS = {}
 
@@ -41,6 +37,7 @@ class RepeatDonors:
                     seen_totals.append(v['amt'])
                     total += v['amt']
                     year = datetime.strptime(v['dt'], '%m%d%Y').year
+
                     row = [
                         recip,
                         v['zip_code'],
