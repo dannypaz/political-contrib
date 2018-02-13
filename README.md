@@ -4,7 +4,7 @@
 
 Hey Insight Data Engineering!
 
-This is my attempt at the [Insight Data Engineering Challenge]()
+This is my attempt at the [Insight Data Engineering Challenge](https://github.com/InsightDataScience/donation-analytics/)
 
 I have spent roughly 5 hours writing code and tests.
 
