@@ -14,6 +14,11 @@ that is not as concise as it would be to use numpy, or scikit.
 I have also omitted databases (in-memory and the like) for a solution that should scale
 w/ the amount of memory you have on your single machine.
 
+##### Considerations
+
+I did not have enough time to implement Functional/End 2 End testing. I was able to complete as much
+unit tests as I could.
+
 Please see below for more information.
 
 # Architecture
@@ -83,15 +88,17 @@ of the project. Required files are: `itcont.txt` (for contribution info) and `pe
 Simply run the following command to use the program:
 
 ```
-run.sh
+./run.sh
 ```
 
-NOTE: You may need to add executable permissions to the `run.sh` by running the following: `chmod +x run.sh`.
+NOTE: You may need to add executable permissions to `run.sh` by running the following: `chmod +x run.sh`.
 
 # Tests
 
-Tests can be ran with the following command at the root of the directory:
+All tests (unit and insight) can be ran with the following command at the root of the directory:
 
 ```
-(cd insight_testsuite && ./run_tests.sh)
+./run_tests.sh
 ```
+
+NOTE: You may need to add executable permissions to `run_tests.sh` by running the following: `chmod +x run_tests.sh`.

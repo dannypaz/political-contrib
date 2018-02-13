@@ -88,7 +88,7 @@ class ContributionFormatter:
             The consumer (repeat_donors) will then skip the record entirely if `valid_row`
             returns false
         """
-        return (self.zip_code and self.name and self.cmte_id and self.transaction_amt)
+        return True if (self.zip_code and self.name and self.cmte_id and self.transaction_amt) else False
 
     def other_id_empty(self):
         """

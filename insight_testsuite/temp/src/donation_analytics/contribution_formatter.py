@@ -88,7 +88,7 @@ class ContributionFormatter:
             The consumer (repeat_donors) will then skip the record entirely if `valid_row`
             returns false
         """
-        return (self.zip_code and self.name and self.cmte_id and self.transaction_amt)
+        return True if (self.zip_code and self.name and self.cmte_id and self.transaction_amt) else False
 
     def other_id_empty(self):
         """
@@ -124,11 +124,19 @@ class ContributionFormatter:
         return datetime.strptime(dt, '%m%d%Y').year
 
     def generate_cmte_uuid(self):
+        """
+            Generates a UUID based off of information on the recipient of a donation.
+            This will help us identify contributions based on year.
+        """
         year = self.dt_to_year(self.transaction_dt)
         uuid_fields = [self.cmte_id, self.zip_code, str(year)]
         return "".join(uuid_fields)
 
     def generate_uuid(self):
+        """
+            Generates a UUID based off of name and zipcode, which will help us
+            identify a unique record.
+        """
         fields = [self.name, self.zip_code]
         return "".join(fields).replace(" ", "")
 
