@@ -17,7 +17,7 @@ w/ the amount of memory you have on your single machine.
 ##### Considerations
 
 I did not have enough time to implement Functional/End 2 End testing. I was able to complete as much
-unit tests as I could.
+unit tests as I could, however my time was limited due to work.
 
 Please see below for more information.
 
